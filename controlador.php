@@ -14,11 +14,11 @@
                 // Controlamos que la password tenga mas de 8 caracteres
                 if (strlen($_POST['password']) < 9) {
                     // Si la password no cumple la condicion volvemos a login.php informando del error
-                    header("Location: ./login.php?mensaje=passwordCorta");
+                    header("Location: ./index.php?mensaje=passwordCorta");
                 // Controlamos que la password tenga al menos una mayuscula
                 } else if (strtolower($_POST['password']) == $_POST['password']) {
                     // Si la password no cumple la condicion volvemos a login.php informando del error
-                    header("Location: ./login.php?mensaje=passwordMayuscula");
+                    header("Location: ./index.php?mensaje=passwordMayuscula");
                 } else {
                     // Comprobamos el email
                     if ((isset($_POST['email'])) && ($_POST['email'] != null)) {
@@ -29,7 +29,7 @@
                         // Redirige a proyectos.php
                         header("Location: ./proyectos.php");
                     } else {
-                        header("Location: ./login.php?mensaje=introduceEmail"); 
+                        header("Location: ./index.php?mensaje=introduceEmail"); 
                     }
                 }
             }
@@ -55,7 +55,7 @@
                                     "diasTranscurridos" => $_POST['diasTranscurridos'], 
                                     "porcentajeCompletado" => $_POST['porcentajeCompletado'], 
                                     "importancia" => $_POST['importancia']);
-            // Creamos una fila nueva en el array de sesiOn de proyectos 
+            // Creamos una fila nueva en el array de sesion de proyectos 
             array_push($_SESSION['proyectos'], $nuevoProyecto);
             header("Location: ./proyectos.php");
         }
@@ -78,6 +78,13 @@
             // Eliminamos todo
             if (strcmp($_GET['accion'], "eliminarTodo") == 0) {
                 $_SESSION['proyectos'] = array();
+                header("Location: ./proyectos.php");
+            }
+
+            // Enviamos PDF
+            if (strcmp($_GET['accion'], "enviarPDF") == 0) {
+                crearPDF($_SESSION['proyectos']);
+                enviarPDF();
                 header("Location: ./proyectos.php");
             }
         }
