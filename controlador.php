@@ -85,8 +85,8 @@
             if (strcmp($_GET['accion'], "enviarPDF") == 0) {
                 crearPDF($_SESSION['proyectos']);
                 enviarPDF();
-                header("Location: ./proyectos.php");
             }
+
         }
     }
 

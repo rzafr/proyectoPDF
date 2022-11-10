@@ -8,7 +8,9 @@
     //Load Composer's autoloader
     require './vendor/autoload.php';
 
-    // Limpia los input de los formularios
+    /**
+     * Limpia los input de los formularios
+     */
     function filtrado($datos) {
         $datos = trim($datos); // Elimina espacios antes y despues de los datos
         $datos = stripslashes($datos); // Elimina backslashes \
@@ -16,7 +18,9 @@
         return $datos;
     }
 
-    // Pinta la tabla de proyectos
+    /**
+     * Pinta la tabla con los proyectos guardados en la sesion
+     */
     function pintarTablaProyectos($pro) {
         echo "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>";
             echo "<thead>";
@@ -48,21 +52,18 @@
                             <td>".$proyecto['fechaInicio']."</td>
                             <td>".$proyecto['fechaFinPrevista']."</td>
                             <td>".$proyecto['diasTranscurridos']."</td>
-                            <td>".$proyecto['porcentajeCompletado']."</td>
+                            <td>".$proyecto['porcentajeCompletado']." %</td>
                             <td>".$proyecto['importancia']."</td>
+                            
                             <td>
-                                <button>
-                                    <a href='./controlador.php?accion=eliminar&id=".$proyecto['id']."'>
-                                        Eliminar
-                                    </a>
-                                </button>
+                                <a href='./verProyecto.php?accion=ver&id=".$proyecto['id']."' class='btn btn-success'>
+                                    Detalle
+                                </a>
                             </td>
                             <td>
-                                <button>
-                                    <a href='./verProyecto.php?accion=ver&id=".$proyecto['id']."'>
-                                        Detalle
-                                    </a>
-                                </button>
+                                <a href='./controlador.php?accion=eliminar&id=".$proyecto['id']."' class='btn btn-danger'>
+                                    Eliminar
+                                </a>
                             </td>";
                     echo "</tr>";
                 }
@@ -70,6 +71,9 @@
         echo "</table>";
     }
 
+    /**
+     * Pinta el grafico del porcentaje completado
+     */
     function pintarGrafico($proyectoVer) {
 ?>
 
@@ -118,15 +122,17 @@
 <?php
     }
 
+    /**
+     * Crea el documento en PDF
+     */
     function crearPDF($proyectos) {
         
-        
         // create new PDF document
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         // set document information
         $pdf->setCreator(PDF_CREATOR);
-        $pdf->setAuthor('Javi Profe');
+        $pdf->setAuthor('Ruben');
         $pdf->setTitle('Proyectos de mi empresa');
         $pdf->setSubject('Proyectos');
         $pdf->setKeywords('PHP, PDF, proyectos');
@@ -174,6 +180,9 @@
         // This method has several options, check the source code documentation for more information.
         $pdf->AddPage();
 
+
+        // CREAR TABLA SIN FUNCION
+
         // set text shadow effect
         $pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>1, 'blend_mode'=>'Normal'));
 
@@ -183,7 +192,7 @@
         <i>Todos los proyectos de mi empresa</i><br><br>";
         $html .= "<table border='1'>";
         $html .= "<tr><td>Nombre</td><td>Fecha inicio</td><td>Fecha fin</td><td>Dias transcurridos</td>
-                <td>Completado</td><td>Importancia</td></tr>";
+                <td>Completado</td><td>Importancia</td></tr><br/>";
 
         foreach($proyectos as $proyecto) {
             $html .= "<tr>";
@@ -191,9 +200,10 @@
             $html .= "<td>".$proyecto['fechaInicio']."</td>";
             $html .= "<td>".$proyecto['fechaFinPrevista']."</td>";
             $html .= "<td>".$proyecto['diasTranscurridos']."</td>";
-            $html .= "<td>".$proyecto['porcentajeCompletado']."</td>";
+            $html .= "<td>".$proyecto['porcentajeCompletado']." %</td>";
             $html .= "<td>".$proyecto['importancia']."</td>";
             $html .= "</tr>";
+            $html .= "<br/>";
         }
 
         $html .= "</table>";
@@ -216,10 +226,13 @@
         //============================================================+
     }
 
+    /**
+     * Envia el archivo PDF a las direcciones de correo indicadas
+     */
     function enviarPDF() {
         //Create an instance; passing `true` enables exceptions
         $mail = new PHPMailer(true);
-        $pass = 'fbgoulflxpenfvky';
+        
         try {
             //Server settings
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
@@ -227,13 +240,13 @@
             $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
             $mail->Username   = 'em4il45pam@gmail.com';                     //SMTP username
-            $mail->Password   = $pass;                               //SMTP password
+            $mail->Password   = 'fbgoulflxpenfvky';                               //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
-            $mail->setFrom('em4il45pam@gmail.com', 'Javier');
-            $mail->addAddress($_SESSION['usuario'], 'ProfeJJ');     //Add a recipient
+            $mail->setFrom('em4il45pam@gmail.com', 'Ruben');
+            $mail->addAddress($_SESSION['usuario'], 'User');     //Add a recipient
             //$mail->addAddress('ellen@example.com');               //Name is optional
             //$mail->addReplyTo('info@example.com', 'Information');
             //$mail->addCC('cc@example.com');
@@ -245,8 +258,8 @@
 
             //Content
             $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->Subject = 'Correo de mi página de proyectos';
-            $mail->Body    = 'Este el cuerpo del mensaje <b>ojo, viene con adjunto!</b>';
+            $mail->Subject = 'Mis proyectos';
+            $mail->Body    = 'Enviando archivo generado a partir de los proyectos <b>ojo, viene con adjunto!</b>';
             //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             $mail->send();
