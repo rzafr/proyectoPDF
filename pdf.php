@@ -11,7 +11,7 @@ $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 // set document information
 $pdf->setCreator(PDF_CREATOR);
-$pdf->setAuthor('Alexander Barahona');
+$pdf->setAuthor('Ruben');
 $pdf->setTitle('Proyectos de mi empresa');
 $pdf->setSubject('Proyectos');
 $pdf->setKeywords('PDF, PDF,proyectos');
